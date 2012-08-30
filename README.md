@@ -1,25 +1,36 @@
 # lein-pedantic
 
-A Leiningen plugin to do many wonderful things.
+A Leiningen plugin to reject dependency graphs with common user surprises.
+
+## Example
+```
+(defproject sample "0.0.1"
+  :dependencies [[org.clojure/clojure "1.4.0"]
+                 [com.cemerick/friend "0.0.9"]
+                 [noir "1.3.0-beta9"]])
+```
+
+Normally with lein this project will use [ring/ring-core "1.0.2"] due to friend, and will use [ring/ring-jetty "1.1.0"] due to noir.  These version do not work together and resulted in issue cemerick/friend#15.
+
+Using lein-pedantic will produce a message and fail the dependency resolution.
+
+```
+Failing dependency resolution because
+[com.cemerick/friend "0.0.9"] -> [ring/ring-core "1.0.2"]
+is overrulling
+[noir "1.3.0-beta9"] -> [compojure "1.0.4"] -> [ring/ring-core "1.1.0"]
+Please use [com.cemerick/friend "0.0.9" :exclusions [ring/ring-core]] to get [ring/ring-core "1.1.0"] or use [noir "1.3.0-beta9" :exclusions [ring/ring-core]] to get [ring/ring-core "1.0.2"].
+```
 
 ## Usage
 
-FIXME: Use this for user-level plugins:
+lein-pedantic requires leiningen 2.
 
-Put `[lein-pedantic "0.1.0-SNAPSHOT"]` into the `:plugins` vector of your
-`:user` profile, or if you are on Leiningen 1.x do `lein plugin install
-lein-pedantic 0.1.0-SNAPSHOT`.
-
-FIXME: Use this for project-level plugins:
-
-Put `[lein-pedantic "0.1.0-SNAPSHOT"]` into the `:plugins` vector of your project.clj.
-
-FIXME: and add an example usage that actually makes sense:
-
-    $ lein pedantic
+Put `[lein-pedantic "0.0.1"]` into the `:plugins` vector of your
+`:user` profile.
 
 ## License
 
-Copyright © 2012 FIXME
+Copyright © 2012 Nelson Morris
 
 Distributed under the Eclipse Public License, the same as Clojure.
