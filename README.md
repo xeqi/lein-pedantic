@@ -10,7 +10,7 @@ A Leiningen plugin to reject dependency graphs with common user surprises.
                  [noir "1.3.0-beta9"]])
 ```
 
-Normally with lein this project will use [ring/ring-core "1.0.2"] due to friend, and will use [ring/ring-jetty "1.1.0"] due to noir.  These version do not work together and resulted in issue cemerick/friend#15.
+Normally with lein this project will use [ring/ring-core "1.0.2"] due to friend, and will use [ring/ring-jetty "1.1.0"] due to noir.  These version do not work together and resulted in issue https://github.com/cemerick/friend/issues/15.
 
 Using lein-pedantic will produce a message and fail the dependency resolution.
 
