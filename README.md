@@ -15,10 +15,12 @@ Normally with lein this project will use [ring/ring-core "1.0.2"] due to friend,
 Using lein-pedantic will produce a message and fail the dependency resolution.
 
 ```
-Failing dependency resolution because
+Failing dependency resolution because:
+
 [com.cemerick/friend "0.0.9"] -> [ring/ring-core "1.0.2"]
-is overrulling
+  is overruling
 [noir "1.3.0-beta9"] -> [compojure "1.0.4"] -> [ring/ring-core "1.1.0"]
+
 Please use [com.cemerick/friend "0.0.9" :exclusions [ring/ring-core]] to get [ring/ring-core "1.1.0"] or use [noir "1.3.0-beta9" :exclusions [ring/ring-core]] to get [ring/ring-core "1.0.2"].
 ```
 
@@ -26,8 +28,15 @@ Please use [com.cemerick/friend "0.0.9" :exclusions [ring/ring-core]] to get [ri
 
 lein-pedantic requires leiningen 2.
 
-Put `[lein-pedantic "0.0.1"]` into the `:plugins` vector of your
-`:user` profile.
+Put `[lein-pedantic "0.0.2"]` into the `:plugins` vector of your `:user` profile.  It automatically hooks into leiningen and will run any time leiningen tries to pull dependencies.
+
+## Rules
+
+The rules lein-pedantic uses to fail a dependency resolution are approximately:
+
+1. A top level dependency is overruled by another version.
+
+2. A transitive dependency is overruled by an older version.
 
 ## License
 
