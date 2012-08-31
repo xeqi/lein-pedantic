@@ -3,7 +3,8 @@
 A Leiningen plugin to reject dependency graphs with common user surprises.
 
 ## Example
-```
+
+```clojure
 (defproject sample "0.0.1"
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [com.cemerick/friend "0.0.9"]
