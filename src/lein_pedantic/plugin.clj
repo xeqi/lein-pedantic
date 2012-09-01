@@ -4,26 +4,35 @@
             [pedantic.core :as pedantic]
             [clojure.string :as string]))
 
+(defn- insert-exclusion
+  "Insert an exclusion into spec."
+  [spec x]
+  (if (contains? (apply hash-map spec) :exclusions)
+    (vec (mapcat (fn [[k v]] (if (= k :exclusions)
+                              [k (conj v x)]
+                              [k v])) (partition 2 spec)))
+    (conj spec :exclusions [x])))
+
 (defn help-message [used desired]
   (let [name (first (last used))]
     (cond (= (count used) 1)
           (str "Please use "
-               (conj (first desired) :exclusions [name])
+               (insert-exclusion (first desired) name)
                " to get " (last used)
                " or remove " (first used)
                " to get " (last desired) ".")
           (= (count desired) 1)
           (str "Please use "
-               (conj (first used) :exclusions [name])
+               (insert-exclusion (first used) name)
                " to get " (last desired)
                " or remove " (first desired)
                " to get " (last used) ".")
           :else
           (str "Please use "
-               (conj (first used) :exclusions [name])
+               (insert-exclusion (first used) name)
                " to get " (last desired)
                " or use "
-               (conj (first desired) :exclusions [name])
+               (insert-exclusion (first desired) name)
                " to get " (last used) "."))))
 
 (defn create-msg [overrulled]
