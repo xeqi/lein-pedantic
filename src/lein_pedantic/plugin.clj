@@ -35,32 +35,54 @@
                (insert-exclusion (first desired) name)
                " to get " (last used) "."))))
 
-(defn create-msg [overrulled]
+(defn create-msg [overrulled nl]
+  (string/join (str nl nl)
+               (for [[used desired] overrulled]
+                 (str (string/join " -> " used) nl
+                      "  is overrulling" nl
+                      (string/join " -> " desired) nl nl
+                      (help-message used desired)))))
+
+(defn failure-msg [overrulled]
   (let [nl (System/getProperty "line.separator")]
     (str "Failing dependency resolution because:" nl nl
-         (string/join (str nl nl)
-                      (for [[used desired] overrulled]
-                        (str (string/join " -> " used) nl
-                               "  is overrulling" nl
-                               (string/join " -> " desired) nl nl
-                               (help-message used desired)))))))
+         (create-msg overrulled nl))))
+
+(defn warning-msg [overrulled]
+  (let [nl (System/getProperty "line.separator")]
+    (str "WARNING - dependency conflicts found but ignored:" nl nl
+         (create-msg overrulled nl))))
 
 
-(defn pedantic-deps [f & args]
+;We're hooking a private method and pulling its arguments.
+;This will probably break sometime in the future.
+(defn pedantic-deps [get-dependencies dependency-key project & args]
   (let [args (apply hash-map args)
-        deps (:coordinates args)
+        deps (get project dependency-key)
+        add-deps (fn [x] (apply get-dependencies dependency-key project args))
         resolve-deps (fn [x]
-                       (apply f (apply concat (assoc args :coordinates x))))
+                       (get-dependencies dependency-key (assoc project dependency-key x)))
         map-to-deps (fn [coords] (into {}
                                       (map #(vector % (resolve-deps [%]))
                                            coords)))
-        result (resolve-deps deps)
+        result (add-deps deps)
         overrulled (pedantic/determine-overrulled result
                                                   (map-to-deps deps))]
     (if (empty? overrulled)
       result
-      (leiningen.core.main/abort (create-msg overrulled)))))
+      (if (= (get project :pedantic) :warn)
+        (do (println (warning-msg overrulled))
+            result)
+        (leiningen.core.main/abort (failure-msg overrulled))))))
 
 (defn hooks []
-  (hooke/add-hook #'cemerick.pomegranate.aether/resolve-dependencies
+  "Run anytime deps are gathered"
+  (hooke/add-hook #'leiningen.core.classpath/get-dependencies
                   #'pedantic-deps))
+
+
+(defn middleware [project]
+  "Make the repl default to :warn"
+  (if (some :dependencies (:included-profiles (meta project)))
+    (update-in project [:pedantic] #(if (nil? %) :warn %))
+    project))
