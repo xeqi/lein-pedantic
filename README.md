@@ -31,7 +31,7 @@ lein-pedantic requires leiningen 2.
 
 Put `[lein-pedantic "0.0.5"]` into the `:plugins` vector of your `:user` profile.  It automatically hooks into leiningen and will run any time leiningen tries to pull dependencies.
 
-If you would prefer a warning then failure then add `:pedantic :warn` to the project.clj.  The `lein repl` task will default to a warning, as it adds dependencies to the project that you do not have control over.
+If you would prefer a warning instead of a failure then add `:pedantic :warn` to the project.clj.  The `lein repl` task will default to a warning, as it adds dependencies to the project that you do not have control over.
 
 ## Rules
 
