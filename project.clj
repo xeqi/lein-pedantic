@@ -1,4 +1,4 @@
-(defproject lein-pedantic "0.0.5"
+(defproject lein-pedantic "0.0.6-SNAPSHOT"
   :description "lein plugin to reject dependency graphs with common user surprises"
   :url "https://github.com/xeqi/lein-pedantic"
   :license {:name "Eclipse Public License"
