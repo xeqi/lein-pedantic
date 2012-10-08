@@ -57,15 +57,13 @@
 ;We're hooking a private method and pulling its arguments.
 ;This will probably break sometime in the future.
 (defn pedantic-deps [get-dependencies dependency-key project & args]
-  (let [args (apply hash-map args)
-        deps (get project dependency-key)
-        add-deps (fn [x] (apply get-dependencies dependency-key project args))
+  (let [deps (get project dependency-key)
         resolve-deps (fn [x]
                        (get-dependencies dependency-key (assoc project dependency-key x)))
         map-to-deps (fn [coords] (into {}
                                       (map #(vector % (resolve-deps [%]))
                                            coords)))
-        result (add-deps deps)
+        result (apply get-dependencies dependency-key project args)
         overrulled (pedantic/determine-overrulled result
                                                   (map-to-deps deps))]
     (if (empty? overrulled)
