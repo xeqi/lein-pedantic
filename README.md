@@ -1,3 +1,11 @@
+# Deprecation Notice
+
+This project is now deprecated as leiningen 2.2.0 includes a large portion of its features.  Please see #13 for more details.
+
+
+
+
+
 # lein-pedantic
 
 A Leiningen plugin to reject dependency graphs with common user surprises.
