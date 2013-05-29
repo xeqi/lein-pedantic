@@ -1,6 +1,6 @@
 # Deprecation Notice
 
-This project is now deprecated as leiningen 2.2.0 includes a large portion of its features.  Please see #13 for more details.
+This project is now deprecated as leiningen 2.2.0 includes a large portion of its features.  Please see [issue #13](https://github.com/xeqi/lein-pedantic/issues/13) for more details.
 
 
 
